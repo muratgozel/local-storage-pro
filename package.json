@@ -1,0 +1,41 @@
+{
+  "name": "local-storage-pro",
+  "version": "1.0.0",
+  "description": "A Web storage spec compliant cross browser local storage library.",
+  "main": "dist/minified/index.js",
+  "scripts": {
+    "test": "for i in tests/*.js; do node \"$i\"; done",
+    "build": "mkdir -p dist/minified && BABEL_ENV=development ./node_modules/.bin/minify ./source -d ./dist/minified && ls -lR ./dist",
+    "build-umd": "mkdir -p dist/umd && BABEL_ENV=development ./node_modules/.bin/browserify -s LocalStoragePro ./source/index.js -o ./dist/umd/index.js && ./node_modules/.bin/minify ./dist/umd/index.js --out-file ./dist/umd/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muratgozel/local-storage-pro.git"
+  },
+  "keywords": [
+    "local-storage",
+    "cross-browser",
+    "browser-storage",
+    "in-memory-storage"
+  ],
+  "author": "Murat Gözel <murat@gozel.com.tr>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/muratgozel/local-storage-pro/issues"
+  },
+  "homepage": "https://github.com/muratgozel/local-storage-pro#readme",
+  "dependencies": {
+    "event-emitter-object": "^1.0.5",
+    "my-little-lodash": "^2.3.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.3",
+    "@babel/core": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "babel-minify": "^0.5.1",
+    "babel-preset-minify": "^0.5.1",
+    "browserify": "^16.5.0",
+    "core-js": "^3.6.4",
+    "jsdom": "^16.0.0"
+  }
+}
