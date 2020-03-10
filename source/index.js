@@ -1,4 +1,4 @@
-const utility = require('my-little-lodash/dist/type')
+const kit = require('@basekits/core')
 const EventEmitter = require('event-emitter-object')
 const LocalStorageDriver = require('./drivers/localStorage')
 const MemoryDriver = require('./drivers/memory')
@@ -6,9 +6,16 @@ const MemoryDriver = require('./drivers/memory')
 function LocalStoragePro(opts = {}) {
   EventEmitter.call(this, {})
 
+  this.kit = kit
+  this.kit.addKit( require('@basekits/kit-type') )
+  this.kit.addKit( require('@basekits/kit-error') )
+  this.kit.addKit( require('@basekits/kit-validator') )
+  this.kit.addKit( require('@basekits/kit-object') )
+  this.kit.addKit( require('@basekits/kit-function') )
+
   this.drivers = {}
   this.driver = null
-  this.window = opts.hasOwnProperty('window') ? opts.window : typeof window == 'undefined' ? null : window
+  this.readWindow(opts)
 
   this.addDriver('memory', MemoryDriver)
   this.addDriver('localStorage', LocalStorageDriver)
@@ -18,6 +25,11 @@ LocalStoragePro.prototype = Object.create(EventEmitter.prototype)
 LocalStoragePro.prototype.constructor = LocalStoragePro
 
 LocalStoragePro.prototype.length = 0
+
+LocalStoragePro.prototype.readWindow = function readWindow(opts) {
+
+  this.window = this.kit.getProp(opts, 'window', typeof window == 'undefined' ? null : window)
+}
 
 LocalStoragePro.prototype.addDriver = function addDriver(name, Driver) {
   const instance = new Driver({window: this.window})
@@ -35,9 +47,9 @@ LocalStoragePro.prototype.setItem = function setItem(key, value, driver = null) 
 
   const activeDriver = this.getDriver(driver)
   if (activeDriver) {
-    activeDriver.set( this.formatKey(key), value )
+    activeDriver.set( this.formatKey(key), value, this )
 
-    if (utility.isError(activeDriver.error)) {
+    if (this.kit.isError(activeDriver.error)) {
       this.emit('error', new Error('SET_ERROR'), activeDriver.error)
       activeDriver.clearError()
       return undefined
@@ -58,7 +70,7 @@ LocalStoragePro.prototype.getItem = function getItem(key, driver = null) {
 
   const activeDriver = this.getDriver(driver)
   if (activeDriver) {
-    const v = activeDriver.get( this.formatKey(key) )
+    const v = activeDriver.get( this.formatKey(key), this )
     this.getLength()
     return v
   }
@@ -103,15 +115,15 @@ LocalStoragePro.prototype.getLength = function getLength(driver = null) {
 
 LocalStoragePro.prototype.json = function json(driver = null) {
   const activeDriver = this.getDriver(driver)
-  return activeDriver ? activeDriver.json() : 0
+  return activeDriver ? activeDriver.json(this) : 0
 }
 
 LocalStoragePro.prototype.isKeyValid = function isKeyValid(k) {
-  return (utility.isString(k) && !utility.isEmpty(k)) || utility.isNumber(k)
+  return (this.kit.isString(k) && !this.kit.isEmpty(k)) || this.kit.isNumber(k)
 }
 
 LocalStoragePro.prototype.formatKey = function formatKey(k) {
-  if (utility.isNumber(k)) return k.toString()
+  if (this.kit.isNumber(k)) return k.toString()
   else return k
 }
 
@@ -120,7 +132,7 @@ LocalStoragePro.prototype.availableDrivers = function availableDrivers() {
 }
 
 LocalStoragePro.prototype.getDriver = function getDriver(driver = null) {
-  if (!utility.isEmpty(driver)) {
+  if (!this.kit.isEmpty(driver)) {
     if (this.availableDrivers().indexOf(driver) === -1) {
       this.emit('error', new Error('DRIVER_NOT_FOUND'))
       return undefined

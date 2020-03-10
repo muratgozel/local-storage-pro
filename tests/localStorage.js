@@ -19,3 +19,9 @@ assert.deepStrictEqual( store.json(), {hey: 'Murat', hey2: 'Murat2'} )
 
 store.clear()
 assert.strictEqual( store.length, 0 )
+
+store.setItem('hey4', {sample: 'A'})
+assert.deepStrictEqual( store.getItem('hey4'), {sample: 'A'} )
+
+store.setItem('hey5', JSON.stringify({sample: 'A'}))
+assert.deepStrictEqual( store.getItem('hey5'), JSON.stringify({sample: 'A'}) )

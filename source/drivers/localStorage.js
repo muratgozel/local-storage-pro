@@ -24,9 +24,16 @@ LocalStorageDriver.prototype.clearError = function clearError() {
   this.error = null
 }
 
-LocalStorageDriver.prototype.set = function set(key, value) {
+LocalStorageDriver.prototype.set = function set(key, value, lib) {
+  // serialize value
+  const v = lib.kit.stringify(value)
+
   try {
-    this.window.localStorage.setItem(key, value)
+    this.window.localStorage.setItem(key, v)
+
+    // will remember type later
+    const type = lib.kit.getType(value)
+    this.window.localStorage.setItem('LOCALSTORAGEPRO_TYPE_' + key, type)
   } catch (e) {
     this.error = e
     return false
@@ -35,12 +42,20 @@ LocalStorageDriver.prototype.set = function set(key, value) {
   return true
 }
 
-LocalStorageDriver.prototype.get = function get(key) {
-  return this.window.localStorage.getItem(key)
+LocalStorageDriver.prototype.get = function get(key, lib) {
+  const type = this.window.localStorage.getItem('LOCALSTORAGEPRO_TYPE_' + key)
+  if (typeof type == 'string' && type.length > 0) {
+    const value = this.window.localStorage.getItem(key)
+    return lib.kit.destringify(value, type)
+  }
+  else {
+    return this.window.localStorage.getItem(key)
+  }
 }
 
 LocalStorageDriver.prototype.remove = function remove(key) {
   this.window.localStorage.removeItem(key)
+  this.window.localStorage.removeItem('LOCALSTORAGEPRO_TYPE_' + key)
   return true
 }
 
@@ -50,18 +65,20 @@ LocalStorageDriver.prototype.clear = function clear() {
 }
 
 LocalStorageDriver.prototype.length = function length() {
-  return this.window.localStorage.length
+  return this.window.localStorage.length / 2
 }
 
 LocalStorageDriver.prototype.key = function key(index) {
   return this.window.localStorage(index)
 }
 
-LocalStorageDriver.prototype.json = function json() {
+LocalStorageDriver.prototype.json = function json(lib) {
   const json = {}
-  for (let i = 0; i < this.length(); i++) {
+  for (let i = 0; i < this.length() * 2; i++) {
     const key = this.window.localStorage.key(i)
-    json[ key ] = this.get(key)
+    if (!(key.length > 21 && key.slice(0, 21) == 'LOCALSTORAGEPRO_TYPE_')) {
+      json[ key ] = this.get(key, lib)
+    }
   }
   return json
 }
