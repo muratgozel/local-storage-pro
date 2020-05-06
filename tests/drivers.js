@@ -1,5 +1,5 @@
-const assert = require('assert')
-const Store = require('../dist/minified')
+const store = require('../dist/local-storage-pro.cjs.js')
 
-const store = new Store()
-assert.deepStrictEqual(store.availableDrivers(), ['memory'])
+test('drivers.', () => {
+  expect(store.availableDrivers()).toStrictEqual(['memory'])
+})

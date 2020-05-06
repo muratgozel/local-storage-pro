@@ -1,27 +1,29 @@
-const assert = require('assert')
 const {JSDOM} = require("jsdom")
-const Store = require('../dist/minified')
+const store = require('../dist/local-storage-pro.cjs.js')
 
 const dom = new JSDOM(`<!DOCTYPE html><html><body><p>Hello world</p></body></html>`, {
   url: 'http://127.0.0.1'
 })
-const store = new Store({window: dom.window})
-assert.strictEqual( store.setItem('hey', 'Murat'), true )
-assert.strictEqual( store.getItem('hey'), 'Murat' )
+store.setWindow(dom.window)
 
-store.setItem('hey2', 'Murat2')
-store.setItem('hey3', 'Murat3')
-assert.strictEqual( store.length, 3 )
+test('setters and getters.', () => {
+  store.setItem('hey', 'Murat')
+  expect(store.getItem('hey')).toBe('Murat')
 
-store.removeItem('hey3')
-assert.strictEqual( store.length, 2 )
-assert.deepStrictEqual( store.json(), {hey: 'Murat', hey2: 'Murat2'} )
+  store.setItem('hey2', 'Murat2')
+  store.setItem('hey3', 'Murat3')
+  expect(store.length).toBe(3)
 
-store.clear()
-assert.strictEqual( store.length, 0 )
+  store.removeItem('hey3')
+  expect(store.length).toBe(2)
+  expect(store.json()).toStrictEqual({hey: 'Murat', hey2: 'Murat2'})
 
-store.setItem('hey4', {sample: 'A'})
-assert.deepStrictEqual( store.getItem('hey4'), {sample: 'A'} )
+  store.clear()
+  expect(store.length).toBe(0)
 
-store.setItem('hey5', JSON.stringify({sample: 'A'}))
-assert.deepStrictEqual( store.getItem('hey5'), JSON.stringify({sample: 'A'}) )
+  store.setItem('hey4', {sample: 'A'})
+  expect(store.getItem('hey4')).toStrictEqual({sample: 'A'})
+
+  store.setItem('hey5', JSON.stringify({sample: 'A'}))
+  expect(store.getItem('hey5')).toBe(JSON.stringify({sample: 'A'}))
+})

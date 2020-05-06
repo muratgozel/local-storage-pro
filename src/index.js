@@ -1,34 +1,27 @@
-const kit = require('@basekits/core')
-const EventEmitter = require('event-emitter-object')
-const LocalStorageDriver = require('./drivers/localStorage')
-const MemoryDriver = require('./drivers/memory')
+import {typekit, validationkit} from 'basekits'
+import EventEmitterObject from 'event-emitter-object'
+import LocalStorageDriver from './drivers/localStorage'
+import MemoryDriver from './drivers/memory'
 
-function LocalStoragePro(opts = {}) {
-  EventEmitter.call(this, {})
+function LocalStoragePro() {
+  EventEmitterObject.call(this, {})
 
-  this.kit = kit
-  this.kit.addKit( require('@basekits/kit-type') )
-  this.kit.addKit( require('@basekits/kit-error') )
-  this.kit.addKit( require('@basekits/kit-validator') )
-  this.kit.addKit( require('@basekits/kit-object') )
-  this.kit.addKit( require('@basekits/kit-function') )
+  this.window = undefined
+  this.setWindow(typeof window == 'undefined' ? undefined : window)
 
   this.drivers = {}
   this.driver = null
-  this.readWindow(opts)
-
   this.addDriver('memory', MemoryDriver)
   this.addDriver('localStorage', LocalStorageDriver)
 }
 
-LocalStoragePro.prototype = Object.create(EventEmitter.prototype)
+LocalStoragePro.prototype = Object.create(EventEmitterObject.prototype)
 LocalStoragePro.prototype.constructor = LocalStoragePro
 
 LocalStoragePro.prototype.length = 0
 
-LocalStoragePro.prototype.readWindow = function readWindow(opts) {
-
-  this.window = this.kit.getProp(opts, 'window', typeof window == 'undefined' ? null : window)
+LocalStoragePro.prototype.setWindow = function setWindow(w) {
+  this.window = w
 }
 
 LocalStoragePro.prototype.addDriver = function addDriver(name, Driver) {
@@ -49,7 +42,7 @@ LocalStoragePro.prototype.setItem = function setItem(key, value, driver = null) 
   if (activeDriver) {
     activeDriver.set( this.formatKey(key), value, this )
 
-    if (this.kit.isError(activeDriver.error)) {
+    if (typekit.isError(activeDriver.error)) {
       this.emit('error', new Error('SET_ERROR'), activeDriver.error)
       activeDriver.clearError()
       return undefined
@@ -119,11 +112,11 @@ LocalStoragePro.prototype.json = function json(driver = null) {
 }
 
 LocalStoragePro.prototype.isKeyValid = function isKeyValid(k) {
-  return (this.kit.isString(k) && !this.kit.isEmpty(k)) || this.kit.isNumber(k)
+  return (typekit.isString(k) && validationkit.isNotEmpty(k)) || typekit.isNumber(k)
 }
 
 LocalStoragePro.prototype.formatKey = function formatKey(k) {
-  if (this.kit.isNumber(k)) return k.toString()
+  if (typekit.isNumber(k)) return k.toString()
   else return k
 }
 
@@ -132,7 +125,7 @@ LocalStoragePro.prototype.availableDrivers = function availableDrivers() {
 }
 
 LocalStoragePro.prototype.getDriver = function getDriver(driver = null) {
-  if (!this.kit.isEmpty(driver)) {
+  if (validationkit.isNotEmpty(driver)) {
     if (this.availableDrivers().indexOf(driver) === -1) {
       this.emit('error', new Error('DRIVER_NOT_FOUND'))
       return undefined
@@ -143,4 +136,4 @@ LocalStoragePro.prototype.getDriver = function getDriver(driver = null) {
   return this.driver
 }
 
-module.exports = LocalStoragePro
+export default new LocalStoragePro()

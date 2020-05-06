@@ -55,4 +55,4 @@ MemoryDriver.prototype.json = function json() {
   return this.data
 }
 
-module.exports = MemoryDriver
+export default MemoryDriver

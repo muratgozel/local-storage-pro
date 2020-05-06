@@ -1,17 +1,17 @@
-const assert = require('assert')
-const Store = require('../dist/minified')
+const store = require('../dist/local-storage-pro.cjs.js')
 
-const store = new Store()
-assert.strictEqual( store.setItem('hey', 'Murat'), true )
-assert.strictEqual( store.getItem('hey'), 'Murat' )
+test('memory', () => {
+  store.setItem('hey', 'Murat')
+  expect(store.getItem('hey')).toBe('Murat')
 
-store.setItem('hey2', 'Murat2')
-store.setItem('hey3', 'Murat3')
-assert.strictEqual( store.length, 3 )
+  store.setItem('hey2', 'Murat2')
+  store.setItem('hey3', 'Murat3')
+  expect(store.length).toBe(3)
 
-store.removeItem('hey3')
-assert.strictEqual( store.length, 2 )
-assert.deepStrictEqual( store.json(), {hey: 'Murat', hey2: 'Murat2'} )
+  store.removeItem('hey3')
+  expect(store.length).toBe(2)
+  expect(store.json()).toStrictEqual({hey: 'Murat', hey2: 'Murat2'})
 
-store.clear()
-assert.strictEqual( store.length, 0 )
+  store.clear()
+  expect(store.length).toBe(0)
+})

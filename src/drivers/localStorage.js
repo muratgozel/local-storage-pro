@@ -1,10 +1,12 @@
+import {typekit, functionkit} from 'basekits'
+
 function LocalStorageDriver(opts = {}) {
   this.error = null
   this.window = opts.window
 }
 
 LocalStorageDriver.prototype.test = function test() {
-  if (typeof this.window == 'undefined' || this.window === null) return false
+  if (typeof this.window == 'undefined') return false
 
   if ('localStorage' in this.window) {
     try {
@@ -26,13 +28,13 @@ LocalStorageDriver.prototype.clearError = function clearError() {
 
 LocalStorageDriver.prototype.set = function set(key, value, lib) {
   // serialize value
-  const v = lib.kit.stringify(value)
+  const v = functionkit.stringify(value)
 
   try {
     this.window.localStorage.setItem(key, v)
 
     // will remember type later
-    const type = lib.kit.getType(value)
+    const type = typekit.getType(value)
     this.window.localStorage.setItem('LOCALSTORAGEPRO_TYPE_' + key, type)
   } catch (e) {
     this.error = e
@@ -46,7 +48,7 @@ LocalStorageDriver.prototype.get = function get(key, lib) {
   const type = this.window.localStorage.getItem('LOCALSTORAGEPRO_TYPE_' + key)
   if (typeof type == 'string' && type.length > 0) {
     const value = this.window.localStorage.getItem(key)
-    return lib.kit.destringify(value, type)
+    return functionkit.destringify(value, type)
   }
   else {
     return this.window.localStorage.getItem(key)
@@ -83,4 +85,4 @@ LocalStorageDriver.prototype.json = function json(lib) {
   return json
 }
 
-module.exports = LocalStorageDriver
+export default LocalStorageDriver
