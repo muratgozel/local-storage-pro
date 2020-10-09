@@ -117,16 +117,16 @@ This is an auto-generated report that shows the type, name and size of the bundl
 [comment]: # (DISTRIBUTIONS_REPORT_START)
 ```js
 [
-  "local-storage-pro.amd.js (4.85 KB)",
-  "local-storage-pro.amd.polyfilled.js (13.51 KB)",
-  "local-storage-pro.cjs.js (4.85 KB)",
-  "local-storage-pro.cjs.polyfilled.js (13.51 KB)",
+  "local-storage-pro.amd.js (4.88 KB)",
+  "local-storage-pro.amd.polyfilled.js (13.55 KB)",
+  "local-storage-pro.cjs.js (4.89 KB)",
+  "local-storage-pro.cjs.polyfilled.js (13.55 KB)",
   "local-storage-pro.es.js (4.74 KB)",
   "local-storage-pro.es.polyfilled.js (13.41 KB)",
-  "local-storage-pro.iife.js (4.85 KB)",
-  "local-storage-pro.iife.polyfilled.js (13.51 KB)",
-  "local-storage-pro.umd.js (5.10 KB)",
-  "local-storage-pro.umd.polyfilled.js (13.76 KB)"
+  "local-storage-pro.iife.js (4.88 KB)",
+  "local-storage-pro.iife.polyfilled.js (13.55 KB)",
+  "local-storage-pro.umd.js (5.17 KB)",
+  "local-storage-pro.umd.polyfilled.js (13.84 KB)"
 ]
 ```
 [comment]: # (DISTRIBUTIONS_REPORT_END)
@@ -155,14 +155,14 @@ This is an auto-generated report that shows the pollyfils added by core-js to th
 ]
 // based on the targets:
 {
-  "android": "4.4.3",
+  "android": "83",
   "chrome": "49",
-  "edge": "17",
-  "firefox": "52",
+  "edge": "18",
+  "firefox": "68",
   "ie": "9",
   "ios": "9.3",
-  "opera": "66",
-  "safari": "11.1",
+  "opera": "68",
+  "safari": "5.1",
   "samsung": "4"
 }
 ```
